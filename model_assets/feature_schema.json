@@ -1,0 +1,111 @@
+{
+  "_comment": "Автоматично синхронізовано з тренувальним pipeline (app.py + Colab notebook).",
+
+  "version": "1.2",
+
+  "model": {
+    "tokenizer_name": "roberta-base",
+    "max_len": 160,
+    "stage_b_model": "text_effect_roberta_B_FINAL.pth",
+    "stage_a_model": "confounder_mlp_A_FINAL.pth",
+    "scaler":        "confounder_scaler_A_FINAL.pkl"
+  },
+
+  "target": {
+    "formula": "log1p((likes + comments) / (followers + 1) * 100)",
+    "description": "Логарифмований відносний engagement, нормований на аудиторію та масштабований ×100"
+  },
+
+    "index_calibration": {
+      "p05": 0.58617,
+      "p95": 5.5,
+      "scale": "log1p",
+      "description": "Calibration anchors for PRIMARY SCORE / engagement_relative_score. p05 is based on the lower empirical engagement range; p95 is intentionally set as a high viral anchor to reduce premature saturation at 100."
+    
+  },
+
+  "text_effect_calibration": {
+    "_comment": "ПОТРІБНО ЗАПОВНИТИ: запустити в Colab після тренування:\n  b_preds = df_out.loc[test_idx, 'pred_B_text_effect']\n  p05 = float(np.percentile(b_preds, 5))\n  p95 = float(np.percentile(b_preds, 95))\nВикористовується для text_effect_relative_score [0–100].",
+    "p05": null,
+    "p95": null
+  },
+
+  "preprocessing": {
+    "clean_text_steps": [
+      "replace non-breaking spaces (\\u00a0, \\u200b)",
+      "remove URLs (https?://... and www....)",
+      "collapse whitespace",
+      "str.lower()  ← ОБОВ'ЯЗКОВО: відповідає тренуванню (.str.lower().str.strip())"
+    ]
+  },
+
+  "confounder_features": {
+    "_comment": "Реальний conf_cols визначається зі scaler pkl (ключ 'conf_cols'). Список нижче — для документації та перевірки сумісності.",
+    "account": [
+      "is_business_account",
+      "followers", "log_followers",
+      "following", "log_following",
+      "num_posts", "log_num_posts",
+      "follow_ratio",
+      "posts_per_follower"
+    ],
+    "temporal": [
+      "month", "is_weekend", "dow_sin", "dow_cos"
+    ],
+    "text_surface": [
+      "text_len", "word_count",
+      "hashtag_count", "mention_count",
+      "exclamation_count", "question_count", "emoji_count"
+    ],
+    "interaction": [
+      "hashtags_per_word", "mentions_per_word", "emoji_per_word",
+      "exclam_per_len", "question_per_len"
+    ],
+    "quality": [
+      "image_grade", "description_grade"
+    ]
+  },
+
+  "feature_formulas": {
+    "_comment": "Точні формули, які використовувались при тренуванні. Inference ПОВИНЕН відтворювати їх буквально.",
+    "follow_ratio":      "following / (followers + 1)   ← НЕ followers/following",
+    "posts_per_follower": "num_posts / (followers + 1)",
+    "hashtags_per_word": "text.count('#') / (word_count + 1)",
+    "mentions_per_word": "text.count('@') / (word_count + 1)",
+    "emoji_per_word":    "emoji.is_emoji() count / (word_count + 1)",
+    "exclam_per_len":    "text.count('!') / (text_len + 1)",
+    "question_per_len":  "text.count('?') / (text_len + 1)",
+    "hashtag_count":     "text.count('#')   ← НЕ re.findall(#\\w+)",
+    "mention_count":     "text.count('@')   ← НЕ re.findall(@\\w+)",
+    "emoji_count":       "emoji.is_emoji(c) per char  ← НЕ regex [\\U00010000-\\U0010ffff]",
+    "log_followers":     "math.log1p(followers)",
+    "log_following":     "math.log1p(following)",
+    "log_num_posts":     "math.log1p(num_posts)",
+    "dow_sin":           "sin(2π × weekday / 7)  де weekday=0 є понеділок",
+    "dow_cos":           "cos(2π × weekday / 7)"
+  },
+
+  "sentiment_note": "sent_neg / sent_neu / sent_pos / sent_confidence НЕ є конфаундерами (не подаються у Stage A). Використовуються лише для post-analysis абляції.",
+
+  "category_features": [
+    "cat_arts_&_culture",
+    "cat_business_&_entrepreneurs",
+    "cat_celebrity_&_pop_culture",
+    "cat_diaries_&_daily_life",
+    "cat_family",
+    "cat_fashion_&_style",
+    "cat_film_tv_&_video",
+    "cat_fitness_&_health",
+    "cat_food_&_dining",
+    "cat_gaming",
+    "cat_learning_&_educational",
+    "cat_music",
+    "cat_news_&_social_concern",
+    "cat_other_hobbies",
+    "cat_relationships",
+    "cat_science_&_technology",
+    "cat_sports",
+    "cat_travel_&_adventure",
+    "cat_youth_&_student_life"
+  ]
+}

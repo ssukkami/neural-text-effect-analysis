@@ -1,0 +1,23 @@
+@'
+* text=auto
+
+*.py text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+
+*.pth binary
+*.pkl binary
+*.pt binary
+*.safetensors binary
+*.parquet binary
+'@ | Set-Content -Encoding UTF8 .gitattributes

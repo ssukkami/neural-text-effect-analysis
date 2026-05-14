@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEURO // INFLUENCE</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="/static/style.css?v=5.0">
+</head>
+
+<body>
+  <div class="cursor-aura"></div>
+
+  <header>
+    <div class="logo">
+      <i class="fa-solid fa-brain" style="margin-right: 10px;"></i> NEURO_INF
+    </div>
+
+    <nav class="nav-links">
+      <button class="nav-btn active" onclick="switchTab('terminal', event)">Single Text</button>
+      <button class="nav-btn" onclick="switchTab('analysis', event)">A/B Compare</button>
+      <button class="nav-btn" onclick="switchTab('dataset', event)">Dataset</button>
+    </nav>
+
+    <div class="system-status">
+      <span class="status-indicator blink"></span> SYSTEM ACTIVE
+    </div>
+  </header>
+
+  <main>
+    <div id="terminal" class="view active-view">
+      <section class="panel">
+        <div class="panel-header"><span>Input Parameters</span><i class="fa-solid fa-terminal"></i></div>
+        <div class="panel-scroll">
+          <div class="hero-title">TEXT <span class="accent-text">ANALYSIS</span></div>
+
+          <div class="input-wrapper">
+            <textarea id="term-input" class="brutalist-input large-textarea" placeholder="ENTER POST TEXT..."></textarea>
+
+            <div class="data-label" style="margin-top: 20px;">OPTIONAL ACCOUNT CONTEXT FOR STAGE A</div>
+
+            <div class="meta-inputs">
+              <input type="number" id="term-followers" class="brutalist-input compact-input" placeholder="FOLLOWERS">
+              <input type="number" id="term-following" class="brutalist-input compact-input" placeholder="FOLLOWING">
+            </div>
+
+            <div class="meta-inputs" style="margin-top:10px;">
+              <input type="number" id="term-posts" class="brutalist-input compact-input" placeholder="TOTAL POSTS">
+              <select id="term-type" class="brutalist-input compact-input">
+                <option value="">ACCOUNT TYPE</option>
+                <option value="BUSINESS">BUSINESS</option>
+                <option value="PERSONAL">PERSONAL</option>
+              </select>
+            </div>
+
+            <div class="meta-inputs" style="margin-top:10px;">
+              <input type="text" id="term-timestamp" class="brutalist-input compact-input" placeholder="TIMESTAMP (OPTIONAL)">
+              <select id="term-audience" class="brutalist-input compact-input">
+                <option value="generic">GENERIC</option>
+                <option value="b2b">B2B</option>
+                <option value="general">GENERAL</option>
+                <option value="tech">TECH</option>
+              </select>
+            </div>
+
+            <div class="meta-inputs" style="margin-top:10px;">
+              <input type="number" step="0.01" id="term-image-grade" class="brutalist-input compact-input" placeholder="IMAGE GRADE (OPTIONAL)">
+              <input type="number" step="0.01" id="term-description-grade" class="brutalist-input compact-input" placeholder="DESCRIPTION GRADE (OPTIONAL)">
+            </div>
+          </div>
+        </div>
+
+        <button id="term-btn" class="action-btn" style="justify-content: center; gap: 15px;">
+          <i class="fa-solid fa-angles-right"></i>
+          <span>RUN ANALYSIS</span>
+          <i class="fa-solid fa-angles-left"></i>
+        </button>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header"><span>Analytical Report</span><i class="fa-solid fa-microchip"></i></div>
+
+        <div class="panel-scroll">
+          <div class="data-row">
+            <div class="data-cell">
+              <span class="data-label">PREDICTION MODE</span>
+              <span id="term-mode" class="data-value" style="font-size: 1.4rem;">--</span>
+            </div>
+            <div class="data-cell">
+              <span class="data-label">PRIMARY SCORE</span>
+              <span id="term-score" class="data-value accent-text">--.-</span>
+            </div>
+          </div>
+
+          <div class="data-row">
+            <div class="data-cell">
+              <span class="data-label">PREDICTED ENGAGEMENT LOG</span>
+              <span id="term-pred-log" class="data-value" style="font-size: 1.8rem;">--</span>
+            </div>
+            <div class="data-cell">
+              <span class="data-label">TEXT EFFECT RELATIVE SCORE</span>
+              <span id="term-textscore" class="data-value" style="font-size: 1.8rem;">--</span>
+            </div>
+          </div>
+
+          <div class="data-row account-row" id="term-account-row" style="background: rgba(255, 209, 220, 0.1);">
+            <div class="data-cell" id="term-baseline-cell">
+              <span class="data-label">BASELINE COMPONENT (STAGE A)</span>
+              <span id="term-baseline" class="data-value" style="font-size: 2rem;">--</span>
+            </div>
+            <div class="data-cell" id="term-texteffect-cell" style="background: var(--bg-white);">
+              <span class="data-label" id="term-texteffect-label" style="color: var(--fg-black);">TEXT RESIDUAL COMPONENT (STAGE B)</span>
+              <span id="term-texteffect" class="data-value" style="font-size: 2rem;">--</span>
+            </div>
+          </div>
+
+          <div class="data-row">
+            <div class="data-cell wide">
+              <span class="data-label">STAGE A STATUS</span>
+              <div id="term-stagea" class="advice-box">
+                <span style="font-size:0.8rem; color:#666;">WAITING FOR DATA...</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="data-row">
+            <div class="data-cell wide">
+              <span class="data-label">ATTENTION-DERIVED TERMS (HEURISTIC)</span>
+              <div id="term-phrases" style="margin-top: 5px;">
+                <span style="font-size:0.8rem; color:#666;">WAITING FOR DATA...</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="data-row">
+            <div class="data-cell wide" style="background: var(--bg-white);">
+              <span class="data-label">AUXILIARY ANALYSIS</span>
+              <div id="term-advice" class="advice-box">
+                <span style="color:#666;">RUN ANALYSIS TO GENERATE AUXILIARY RECOMMENDATIONS</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="data-row">
+            <div class="data-cell wide" style="background: var(--bg-white);">
+              <span class="data-label">AUXILIARY LANGUAGE METRICS</span>
+
+              <div class="metrics-grid metrics-grid-primary">
+                <div class="metric-card metric-card-strong">
+                  <div class="metric-head">
+                    <span>LANGUAGE QUALITY</span>
+                    <span id="m-lang-val" class="metric-val">--.-/100</span>
+                  </div>
+                  <div class="mini-bar">
+                    <div id="m-lang-bar" class="mini-fill" style="width:0%"></div>
+                  </div>
+                </div>
+
+                <div class="metric-card metric-card-strong">
+                  <div class="metric-head">
+                    <span>AUDIENCE FIT</span>
+                    <span id="m-aud-val" class="metric-val">--.-/100</span>
+                  </div>
+                  <div class="mini-bar">
+                    <div id="m-aud-bar" class="mini-fill" style="width:0%"></div>
+                  </div>
+                </div>
+
+                <div class="metric-card">
+                  <div class="metric-head">
+                    <span>ENGAGEMENT POTENTIAL</span>
+                    <span id="m-eng-val" class="metric-val">--.-/100</span>
+                  </div>
+                  <div class="mini-bar">
+                    <div id="m-eng-bar" class="mini-fill" style="width:0%"></div>
+                  </div>
+                </div>
+
+                <div class="metric-card">
+                  <div class="metric-head">
+                    <span>STAGE A USABLE</span>
+                    <span id="m-stagea-val" class="metric-val">--</span>
+                  </div>
+                  <div class="delta-pill" id="m-stagea-pill">--</div>
+                </div>
+              </div>
+
+              <div class="metrics-split">
+                <div class="metrics-chart-wrap">
+                  <div class="metrics-subtitle">AUXILIARY PROFILE</div>
+                  <div class="chart-canvas-wrapper" style="height:220px;">
+                    <canvas id="termMetricsRadar"></canvas>
+                  </div>
+                </div>
+
+                <div class="metrics-table-wrap">
+                  <div class="metrics-subtitle">READABILITY AND STYLE</div>
+                  <table class="metrics-table">
+                    <tbody>
+                      <tr><td>FLESCH</td><td id="t-flesch">--</td></tr>
+                      <tr><td>FK GRADE</td><td id="t-fk">--</td></tr>
+                      <tr><td>AVG SENT LEN</td><td id="t-asl">--</td></tr>
+                      <tr><td>TTR</td><td id="t-ttr">--</td></tr>
+                      <tr><td>WORDS</td><td id="t-wc">--</td></tr>
+                      <tr><td>SENTENCES</td><td id="t-sc">--</td></tr>
+                    </tbody>
+                  </table>
+
+                  <div class="metrics-subtitle" style="margin-top:10px;">TEXT SIGNALS</div>
+                  <div id="signals-chips" class="chips-row"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-bars-area">
+            <span class="data-label">AUXILIARY SENTIMENT PROFILE</span>
+
+            <div class="bar-container">
+              <div id="term-bar-pos" class="bar-fill" style="background-color: var(--soft-pink); width: 0%;"></div>
+              <div id="term-lbl-pos" class="bar-label">POSITIVE 0%</div>
+            </div>
+            <div class="bar-container">
+              <div id="term-bar-neu" class="bar-fill" style="background-color: #A0A0A0; width: 0%;"></div>
+              <div id="term-lbl-neu" class="bar-label">NEUTRAL 0%</div>
+            </div>
+            <div class="bar-container">
+              <div id="term-bar-neg" class="bar-fill" style="background-color: var(--fg-black); width: 0%;"></div>
+              <div id="term-lbl-neg" class="bar-label">NEGATIVE 0%</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="analysis" class="view">
+      <div class="ab-layout">
+        <div class="ab-toolbar">
+          <div class="ab-toolbar-title">A/B COMPARISON</div>
+          <button id="ab-open-diagnostics" class="ab-toolbar-icon">
+            <i class="fa-solid fa-chart-column"></i>
+          </button>
+        </div>
+
+        <div class="ab-main">
+          <div id="ab-center-badge" class="center-badge">=</div>
+
+          <section class="panel ab-panel">
+            <div class="panel-header">
+              <span>Variant A</span>
+              <i class="fa-solid fa-a"></i>
+            </div>
+
+            <div class="panel-scroll">
+              <div class="input-wrapper ab-input-wrap">
+                <textarea
+                  id="ab-input-a"
+                  class="brutalist-input large-textarea ab-textarea"
+                  placeholder="ENTER FIRST TEXT VARIANT..."
+                ></textarea>
+              </div>
+
+              <div class="data-row">
+                <div class="data-cell wide ab-summary-cell">
+                  <span class="data-label">PRIMARY SCORE</span>
+                  <span id="ab-score-a" class="data-value ab-score-value">--.-</span>
+
+                  <div class="ab-submetric">
+                    TEXT RESIDUAL COMPONENT:
+                    <span id="ab-texteffect-a">--.-</span>
+                  </div>
+
+                  <div id="ab-signals-a" class="chips-row ab-signals-row"></div>
+                </div>
+              </div>
+
+              <div class="data-row">
+                <div class="data-cell wide">
+                  <span class="data-label">AUXILIARY ANALYSIS A</span>
+                  <div id="ab-advice-a" class="advice-box">WAITING...</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel ab-panel">
+            <div class="panel-header">
+              <span>Variant B</span>
+              <i class="fa-solid fa-b"></i>
+            </div>
+
+            <div class="panel-scroll">
+              <div class="input-wrapper ab-input-wrap">
+                <textarea
+                  id="ab-input-b"
+                  class="brutalist-input large-textarea ab-textarea"
+                  placeholder="ENTER SECOND TEXT VARIANT..."
+                ></textarea>
+              </div>
+
+              <div class="data-row">
+                <div class="data-cell wide ab-summary-cell">
+                  <span class="data-label">PRIMARY SCORE</span>
+                  <span id="ab-score-b" class="data-value ab-score-value">--.-</span>
+
+                  <div class="ab-submetric">
+                    TEXT RESIDUAL COMPONENT:
+                    <span id="ab-texteffect-b">--.-</span>
+                  </div>
+
+                  <div id="ab-signals-b" class="chips-row ab-signals-row"></div>
+                </div>
+              </div>
+
+              <div class="data-row">
+                <div class="data-cell wide">
+                  <span class="data-label">AUXILIARY ANALYSIS B</span>
+                  <div id="ab-advice-b" class="advice-box">WAITING...</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <button id="ab-btn" class="action-btn ab-action-btn">
+          <i class="fa-solid fa-angles-right"></i>
+          <span>COMPARE TEXT EFFECT</span>
+          <i class="fa-solid fa-angles-left"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="ab-diagnostics-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-head">
+          <span>DETAILED A/B DIAGNOSTICS</span>
+          <button id="ab-close-diagnostics" class="modal-close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="ab-modal-grid">
+            <div class="chart-box">
+              <div class="chart-title-sm">
+                <span>PRIMARY SCORES</span>
+              </div>
+              <div class="chart-canvas-wrapper">
+                <canvas id="abCompareBars"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-box">
+              <div class="chart-title-sm">
+                <span>TEXT SIGNAL COUNTS</span>
+              </div>
+              <div class="chart-canvas-wrapper">
+                <canvas id="abCompareSignals"></canvas>
+              </div>
+            </div>
+
+            <div class="chart-box full-width">
+              <div class="chart-title-sm">
+                <span>TECHNICAL EXPLANATION</span>
+              </div>
+              <div id="ab-technical-compare" class="ab-tech-box">
+                <div style="text-align:center; font-size:0.95rem; font-weight:800; color:#666;">
+                  RUN THE COMPARISON TO POPULATE THIS PANEL
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="dataset" class="view">
+      <section class="panel">
+        <div class="panel-header"><span>Dataset</span><i class="fa-solid fa-database"></i></div>
+        <div class="panel-scroll">
+          <label class="upload-box">
+            <i id="ds-upload-icon" class="fa-solid fa-file-csv upload-icon"></i>
+            <span id="ds-upload-text" style="font-weight: 900; font-size: 1.1rem;">UPLOAD CSV</span>
+            <span style="font-size: 0.7rem; color: #666; margin-top: 5px;">MAX 50MB</span>
+            <input type="file" hidden accept=".csv" id="csvFileInput">
+          </label>
+
+          <div class="data-row">
+            <div class="data-cell wide">
+              <span class="data-label">PROCESSING STATUS</span>
+              <span class="data-value" id="datasetStatus" style="font-size: 1.2rem;">WAITING</span>
+            </div>
+          </div>
+
+          <div class="data-row">
+            <div class="data-cell">
+              <span class="data-label">TOTAL ROWS</span>
+              <span class="data-value" id="ds-rows" style="font-size: 1.8rem;">0</span>
+            </div>
+            <div class="data-cell">
+              <span class="data-label">MEAN METRIC VALUE</span>
+              <span class="data-value" id="ds-avg" style="font-size: 1.8rem;">0</span>
+            </div>
+          </div>
+
+          <div class="dataset-details">
+            <div class="dataset-detail-item">
+              <span class="dataset-detail-label">TEXT COLUMN</span>
+              <span class="dataset-detail-value" id="ds-col-text">--</span>
+            </div>
+            <div class="dataset-detail-item">
+              <span class="dataset-detail-label">METRIC COLUMN</span>
+              <span class="dataset-detail-value" id="ds-col-metric">--</span>
+            </div>
+            <div class="dataset-detail-item">
+              <span class="dataset-detail-label">METRIC TYPE</span>
+              <span class="dataset-detail-value" id="ds-metric-type">--</span>
+            </div>
+            <div class="dataset-detail-item">
+              <span class="dataset-detail-label">VALID TEXT ROWS</span>
+              <span class="dataset-detail-value" id="ds-valid-texts">0</span>
+            </div>
+            <div class="dataset-detail-item">
+              <span class="dataset-detail-label">ANALYZED ROWS</span>
+              <span class="dataset-detail-value" id="ds-analyzed">0</span>
+            </div>
+            <div class="dataset-detail-item">
+              <span class="dataset-detail-label">SAMPLING MODE</span>
+              <span class="dataset-detail-value" id="ds-sampling">--</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="action-btn btn-disabled" id="visualizeBtn" style="justify-content: center; gap: 15px;">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>VISUALIZE</span>
+          <i class="fa-solid fa-chart-column"></i>
+        </button>
+      </section>
+
+      <section class="panel" style="border-right: none;">
+        <div class="panel-header"><span>Dataset Analytics</span><i class="fa-solid fa-chart-line"></i></div>
+        <div class="charts-grid">
+          <div class="chart-box full-width">
+            <div class="chart-title-sm"><span>TOP TERMS BY FREQUENCY</span><i class="fa-solid fa-list"></i></div>
+            <div class="chart-canvas-wrapper"><canvas id="impactChart"></canvas></div>
+          </div>
+
+          <div class="chart-box">
+            <div class="chart-title-sm"><span>SENTIMENT DISTRIBUTION</span></div>
+            <div class="chart-canvas-wrapper"><canvas id="sentimentDoughnut"></canvas></div>
+          </div>
+
+          <div class="chart-box">
+            <div class="chart-title-sm"><span>HIGH-SIGNAL TERMS</span></div>
+            <div class="chart-canvas-wrapper"><canvas id="topicsRadar"></canvas></div>
+          </div>
+
+          <div class="chart-box full-width">
+            <div class="chart-title-sm"><span>TEXT LENGTH DISTRIBUTION</span></div>
+            <div class="chart-canvas-wrapper"><canvas id="lengthDistributionChart"></canvas></div>
+          </div>
+
+          <div class="chart-box full-width">
+            <div class="chart-title-sm"><span>LENGTH VS TEXT-EFFECT SCORE</span></div>
+            <div class="chart-canvas-wrapper"><canvas id="correlationScatter"></canvas></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="/static/app.js?v=5.0"></script>
+</body>
+</html>

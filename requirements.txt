@@ -1,0 +1,12 @@
+flask
+pywebview
+torch
+transformers
+numpy
+pandas
+scikit-learn
+textblob
+textstat
+joblib
+emoji
+pytest
