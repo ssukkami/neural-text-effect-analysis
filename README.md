@@ -1,83 +1,77 @@
 Система аналізу впливу тексту на соціальних мережах з використанням моделей машинного навчання.
 
-## Встановлення
+## Модельні файли
 
-### 1. Клонування репозиторію
-```bash
-git clone https://github.com/YOUR_USERNAME/neuro_influence.git
-cd neuro_influence
+Розміщені в GitHub Releases:
+
+```text
+https://github.com/ssukkami/neural-text-effect-analysis/releases/latest
 ```
 
-### 2. Встановлення залежностей
+Після завантаження модельні файли потрібно розмістити в папці:
+
+```text
+model_assets/
+```
+
+Очікувані файли:
+
+```text
+confounder_mlp_A_FINAL.pth
+confounder_scaler_A_FINAL.pkl
+text_effect_roberta_B_FINAL.pth
+feature_schema.json
+```
+
+## Встановлення
+
+Клонування репозиторію:
+
+```bash
+git clone https://github.com/ssukkami/neural-text-effect-analysis.git
+cd neural-text-effect-analysis
+```
+
+Створення віртуального середовища:
+
+```bash
+python -m venv .venv
+```
+
+Активація середовища у Windows:
+
+```bash
+.venv\Scripts\activate
+```
+
+Активація середовища у Linux або macOS:
+
+```bash
+source .venv/bin/activate
+```
+
+Встановлення залежностей:
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Завантаження моделей
+## Запуск
 
-Моделі зберігаються окремо через Git LFS для оптимізації розміру репозиторію.
+Перед запуском потрібно переконатися, що модельні файли розміщені в папці `model_assets/`.
 
-**Варіант A: Git LFS (рекомендується)**
-```bash
-# Встановити Git LFS
-git lfs install
-
-# Моделі автоматично завантажиться при клонуванні
-git clone https://github.com/YOUR_USERNAME/neuro_influence.git
-```
-
-**Варіант B: Автоматичне завантаження**
-```bash
-# Запустити скрипт завантаження моделей
-python download_models.py
-```
-
-## 🚀 Запуск
-
-### Web Interface
 ```bash
 python app.py
 ```
-Додаток буде доступний за адресою: `http://localhost:5000`
-
-### Тести
-```bash
-pytest tests/
-```
-
-## Функціональність
-
-### 1. Аналіз тексту
-```python
-predictor = Predictor()
-result = predictor.predict_single(text, followers=100, following=50)
-```
-
-### 2. Обробка датасетів
-Завантажуйте CSV файли з 1200+ рядків для пакетної обробки
-
-## Модельні активи
-
-**Увага:** Файли моделей керуються Git LFS. Якщо Git LFS не встановлено:
-
-```bash
-# Встановити Git LFS
-# На Windows: https://git-lfs.github.com/
-# На macOS: brew install git-lfs
-# На Linux: https://github.com/git-lfs/git-lfs/wiki/Installation
-
-git lfs install
-git lfs pull
-```
-
-Або скористайтесь скриптом `download_models.py`.
 
 ## Тестування
 
 ```bash
-# Запустити всі тести
-pytest tests/
+pytest
+```
 
-# З деталями покриття
-pytest tests/ --cov
+або:
+
+```bash
+pytest tests/
 ```
